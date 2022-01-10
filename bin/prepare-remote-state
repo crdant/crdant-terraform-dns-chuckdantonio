@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+PROJECT_ID=$(yq e .gcp.project ${PARAMS_YAML})
+
+SERVICE_ACCOUNT=$(yq e .gcp.service-account.name ${PARAMS_YAML})
+DISPLAY_NAME=$(yq e .gcp.service-account.display-name ${PARAMS_YAML})
+gcloud iam service-accounts create --project=${PROJECT_ID} \
+    --display-name "${DISPLAY_NAME}" "${SERVICE_ACCOUNT}"
+
+SERVICE_ACCOUNT_EMAIL=$(gcloud iam service-accounts list \
+  --project=${PROJECT_ID} \
+  --filter="displayName:${DISPLAY_NAME}" \
+  --format 'value(email)')
+
+gcloud iam service-accounts keys create ${SECRETS_DIR}/${SERVICE_ACCOUNT}.json \
+    --iam-account ${SERVICE_ACCOUNT_EMAIL}
+
+BUCKET=$(basename ${PROJECT_DIR})
+gsutil mb -p ${PROJECT_ID} gs://${BUCKET}
+gsutil versioning set on gs://${BUCKET}
+echo gsutil iam ch serviceAccount:${SERVICE_ACCOUNT_EMAIL}:objectAdmin gs://${BUCKET}
