@@ -51,24 +51,24 @@ resource "google_dns_record_set" "chuckdantonio_com_txt" {
 }
 
 resource "google_dns_record_set" "blog" {
-  name         = "blog." + google_dns_managed_zone.chuckdantonio_com.dns_name
+  name         = "blog.${google_dns_managed_zone.chuckdantonio_com.dns_name}"
   managed_zone = google_dns_managed_zone.chuckdantonio_com.name
   type         = "CNAME"
   ttl          = 300
 
   rrdatas = [
-    "cdant.io"
+    "crdant.io."
   ]
 }
 
 resource "google_dns_record_set" "www" {
-  name         = "www." + google_dns_managed_zone.chuckdantonio_com.dns_name
+  name         = "www.${google_dns_managed_zone.chuckdantonio_com.dns_name}"
   managed_zone = google_dns_managed_zone.chuckdantonio_com.name
   type         = "CNAME"
   ttl          = 300
 
   rrdatas = [
-    "crdant.io"
+    "crdant.io."
   ]
 }
 

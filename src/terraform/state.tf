@@ -1,6 +1,6 @@
 terraform {
   backend "gcs" {
-    bucket = "terraform-dns-shortrib-app"
+    bucket = "terraform-dns-chuckdantonio"
     prefix = "terraform/state"
   }
 }
